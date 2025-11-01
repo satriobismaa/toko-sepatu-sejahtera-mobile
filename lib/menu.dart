@@ -7,9 +7,9 @@ class MyHomePage extends StatelessWidget {
   final String npm = "2406355136"; //npm
   final String kelas = "B"; //kelas
   final List<ItemHomepage> items = [
-    ItemHomepage("See Football News", Icons.newspaper),
-    ItemHomepage("Add News", Icons.add),
-    ItemHomepage("Logout", Icons.logout),
+    ItemHomepage("All Products", Icons.home, Colors.blue),
+    ItemHomepage("My Products", Icons.person, Colors.green),
+    ItemHomepage("Create Product", Icons.add_box, Colors.red),
   ];
 
     @override
@@ -18,9 +18,9 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       // AppBar adalah bagian atas halaman yang menampilkan judul.
       appBar: AppBar(
-        // Judul aplikasi "Football News" dengan teks putih dan tebal.
+        // Judul aplikasi "Toko Sepatu Sejahtera" dengan teks putih dan tebal.
         title: const Text(
-          'Football News',
+          'Toko Sepatu Sejahtera',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'Selamat datang di Football News',
+                      'Welcome to Toko Sepatu Sejahtera!',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
@@ -128,8 +128,9 @@ class InfoCard extends StatelessWidget {
 class ItemHomepage {
   final String name;
   final IconData icon;
+  final Color color;
 
-  ItemHomepage(this.name, this.icon);
+  ItemHomepage(this.name, this.icon, this.color);
 }
 
 class ItemCard extends StatelessWidget {
@@ -143,7 +144,7 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       // Menentukan warna latar belakang dari tema aplikasi.
-      color: Theme.of(context).colorScheme.secondary,
+      color: item.color,
       // Membuat sudut kartu melengkung.
       borderRadius: BorderRadius.circular(12),
 
