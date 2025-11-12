@@ -75,3 +75,53 @@
 </ol>
 
 </details>
+
+<details>
+<Summary><b>Tugas 8</b></Summary>
+<ol>
+    <li>
+        Jelaskan perbedaan antara Navigator.push() dan Navigator.            pushReplacement() pada Flutter. Dalam kasus apa sebaiknya masing-masing digunakan pada aplikasi Football Shop kamu?
+        <br>
+        <br>
+        Perbedaannya terletak pada cara mereka mengelola tumpukan (stack) halaman dalam aplikasi. Navigator.push() menambahkan halaman baru di atas halaman saat ini, memungkinkan pengguna untuk kembali ke halaman sebelumnya dengan menekan tombol kembali. Sebaliknya, Navigator.pushReplacement() menggantikan halaman saat ini dengan halaman baru, sehingga pengguna tidak dapat kembali ke halaman sebelumnya.
+        <br>
+        <br>
+        Dalam aplikasi Football Shop, Navigator.push() sebaiknya digunakan ketika pengguna menavigasi ke halaman detail produk dari halaman daftar produk, sehingga mereka dapat kembali ke daftar produk setelah melihat detail. Sedangkan Navigator.pushReplacement() sebaiknya digunakan ketika pengguna menyelesaikan proses pembelian dan diarahkan ke halaman konfirmasi, karena setelah pembelian selesai, mereka tidak perlu kembali ke halaman checkout.
+    </li>
+    <br>
+    <br>
+    <li>
+        Bagaimana kamu memanfaatkan hierarchy widget seperti Scaffold, AppBar, dan Drawer untuk membangun struktur halaman yang konsisten di seluruh aplikasi?
+        <br>
+        <br>
+        Saya menggunakan Scaffold sebagai kerangka dasar untuk setiap halaman dalam aplikasi, yang menyediakan area untuk:
+        <ul>
+            <li>AppBar: Saya menempatkan AppBar di bagian atas Scaffold untuk menampilkan judul halaman dan menyediakan navigasi utama.</li>
+            <li>Drawer: Saya menambahkan Drawer ke Scaffold untuk menyediakan menu navigasi samping yang konsisten di seluruh aplikasi, memungkinkan pengguna untuk dengan mudah mengakses berbagai bagian aplikasi.</li>
+            <li>Body: Saya menggunakan area body dari Scaffold untuk menampilkan konten utama halaman, memastikan bahwa tata letak dan gaya tetap konsisten di seluruh aplikasi.</li>
+        </ul>
+    </li>
+    <br>
+    <br>
+    <li>    
+        Dalam konteks desain antarmuka, apa kelebihan menggunakan layout widget seperti Padding, SingleChildScrollView, dan ListView saat menampilkan elemen-elemen form? Berikan contoh penggunaannya dari aplikasi kamu.
+        <br>
+        <br>
+        Kelebihan menggunakan layout widget seperti Padding, SingleChildScrollView, dan ListView adalah:
+        <ul>
+            <li>Padding: Memberikan ruang di sekitar elemen form, meningkatkan keterbacaan dan estetika antarmuka. Contohnya, saya menggunakan Padding di sekitar TextFormField untuk memberikan jarak antara input field dan elemen lainnya. Contohnya
+            <code>padding: const EdgeInsets.all(8.0)</code> </li>
+            <li>SingleChildScrollView: Memungkinkan konten form yang panjang untuk digulir, sehingga pengguna dapat mengakses semua elemen form tanpa terpotong. Saya menggunakannya di popup setelah mengeklik tombol save sehingga konten di popup dapat digulir jika melebihi layar</li>
+            <li>ListView: Menyediakan cara yang efisien untuk menampilkan daftar elemen form yang dapat digulir, terutama ketika jumlah elemen tidak tetap. Dalam kode ini saya tidak menggunakan ListView dikarenakan daftar formnya tidak sejenis sehingga saya menggunakan Column + SingleChildScrollView yang lebih cocok ketika form berisi berbagai jenis input</li>
+        </ul>
+    </li>
+    <br>
+    <br>
+    <li>
+        Bagaimana kamu menyesuaikan warna tema agar aplikasi Football Shop memiliki identitas visual yang konsisten dengan brand toko?
+        <br>
+        <br>
+        Saya menyesuaikan warna tema aplikasi Football Shop dengan mengatur primarySwatch dan secondary color di dalam ThemeData pada widget MaterialApp. Saya memilih warna hijau sebagai warna utama (primarySwatch) dan warna hijau juga sebagai warna sekunder (secondary) untuk mencerminkan identitas visual toko. Lalu, karena MaterialApp adalah widget root, maka seluruh aplikasi akan mewarisi tema ini. Dengan cara ini, semua elemen UI yang menggunakan tema ini akan memiliki konsistensi warna yang sesuai dengan brand toko.
+    </li>
+</ol>
+</details>

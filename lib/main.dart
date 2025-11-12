@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toko_sepatu_sejahtera/menu.dart';
+import 'package:toko_sepatu_sejahtera/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Toko Sepatu Sejahtera',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green).copyWith(secondary: Colors.green),
       ),
