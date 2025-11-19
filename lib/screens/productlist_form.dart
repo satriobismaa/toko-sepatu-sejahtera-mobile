@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:toko_sepatu_sejahtera/widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:toko_sepatu_sejahtera/screens/menu.dart';
 
 class ProductFormPage extends StatefulWidget {
     const ProductFormPage({super.key});
@@ -14,6 +18,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     String _name = "";
     String _brand = "";
     int _price = 0;
+    double _rating = 0.0;
     String _description = "";
     String _category = "sneakers"; // default
     String _thumbnail = "";
@@ -33,6 +38,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     ];
     @override
     Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
         return Scaffold(
           appBar: AppBar(
             title: const Center(
@@ -132,7 +138,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       },
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return "Brand name cannot be empty!";
+                          return "Price name cannot be empty!";
                         }
                         if (int.tryParse(value) == null) {
                           return "Price must be a valid number!";
@@ -140,6 +146,49 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         if (int.parse(value) < 0) {
                           return "Price cannot be negative!";
                         }
+                        return null;
+                      },
+                    ),
+                  ),
+                  // === Rating ===
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "Product Rating (0 - 5)",
+                        labelText: "Product Rating",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,1}')),
+                        // angka, optional 1 koma, dan maksimal 1 digit setelah koma (misal 4.5)
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _rating = double.tryParse(value) ?? 0.0;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Rating cannot be empty!";
+                        }
+
+                        final parsed = double.tryParse(value);
+                        if (parsed == null) {
+                          return "Rating must be a valid number!";
+                        }
+
+                        if (parsed < 0) {
+                          return "Rating cannot be negative!";
+                        }
+
+                        if (parsed > 5) {
+                          return "Rating cannot be more than 5!";
+                        }
+
                         return null;
                       },
                     ),
@@ -252,8 +301,39 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           backgroundColor:
                               WidgetStateProperty.all(Colors.blue),
                         ),
-                        onPressed: () {
+                        onPressed: ()async {
                           if (_formKey.currentState!.validate()) {
+                                final response = await request.postJson(
+                                  "http://127.0.0.1:8000/create-flutter/",
+                                  jsonEncode({
+                                    "name": _name,
+                                    "brand": _brand,
+                                    "price": _price,
+                                    "rating":_rating,
+                                    "description": _description,
+                                    "thumbnail": _thumbnail,
+                                    "category": _category,
+                                    "is_featured": _isFeatured,
+                                  }),
+                                );
+                                if (context.mounted) {
+                                  if (response['status'] == 'success') {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text("News successfully saved!"),
+                                    ));
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyHomePage()),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      content: Text("Something went wrong, please try again."),
+                                    ));
+                                  }
+                                }
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -267,6 +347,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                                         Text('Name: $_name'),
                                         Text('Brand: $_brand'),
                                         Text('Price: $_price'), 
+                                        Text('Rating: $_rating'),                                      
                                         Text('Description: $_description'),
                                         Text('Category: $_category'),
                                         Text('Thumbnail: $_thumbnail'),

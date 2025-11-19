@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:toko_sepatu_sejahtera/models/product_entry.dart';
+import 'package:toko_sepatu_sejahtera/widgets/left_drawer.dart';
+import 'package:toko_sepatu_sejahtera/screens/product_detail.dart';
+import 'package:toko_sepatu_sejahtera/widgets/product_entry_card.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+
+class ProductEntryListPage extends StatefulWidget {
+  const ProductEntryListPage({super.key});
+
+  @override
+  State<ProductEntryListPage> createState() => _ProductEntryListPageState();
+}
+
+class _ProductEntryListPageState extends State<ProductEntryListPage> {
+  Future<List<ProductEntry>> fetchProduct(CookieRequest request) async {
+    
+    final response = await request.get('http://127.0.0.1:8000/json/');
+    
+    // Decode response to json format
+    var data = response;
+    
+    // Convert json data to ProductEntry objects
+    List<ProductEntry> listProduct = [];
+    for (var d in data) {
+      if (d != null) {
+        listProduct.add(ProductEntry.fromJson(d));
+      }
+    }
+    return listProduct;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+        title: const Text(
+          'All Product',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+      ),
+      drawer: const LeftDrawer(),
+      body: FutureBuilder(
+        future: fetchProduct(request),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            if (!snapshot.hasData) {
+              return const Column(
+                children: [
+                  Text(
+                    'There are no Product in Toko Sepatu Sejahtera yet.',
+                    style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
+                  ),
+                  SizedBox(height: 8),
+                ],
+              );
+            } else {
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, 
+                  crossAxisSpacing: 10.0, // Jarak antar kolom
+                  mainAxisSpacing: 10.0, // Jarak antar baris
+                  childAspectRatio: 1.05, // Rasio lebar/tinggi (diatur agar kotak tidak terlalu panjang)
+                ),
+                padding: const EdgeInsets.all(10.0),
+                itemCount: snapshot.data! .length,
+                itemBuilder: (_, index) => ProductEntryCard(
+                  product: snapshot.data![index],
+                  onTap: () {
+                    // Navigate to news detail page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetailPage(
+                          product: snapshot.data![index],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+}
